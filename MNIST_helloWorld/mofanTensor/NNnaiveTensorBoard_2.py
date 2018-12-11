@@ -19,17 +19,17 @@ def add_layer(input_data,in_size,out_size,n_layer,active_function):
     with tf.name_scope("layer"):
         with tf.name_scope("W"):
             W=tf.Variable(tf.random_normal([in_size,out_size]),name="weights")
-            tf.summary.histogram(layer_name+"\weights",W)
+            tf.summary.histogram(layer_name+"\weights",W)    #tensorboard看优化过程用的
         with tf.name_scope("b"):
             b=tf.Variable(tf.zeros([1,out_size])+0.1,name="bias")
-            tf.summary.histogram(layer_name+"\\bias",b)
+            tf.summary.histogram(layer_name+"\\bias",b)     #tensorboard看优化过程用的
         with tf.name_scope("wx_plus_b"):
             wx_plus_b=tf.matmul(input_data,W)+b   #matmul：矩阵相乘    multiply:元素相乘
         if active_function is None:
             output=wx_plus_b
         else:
             output=active_function(wx_plus_b)
-        tf.summary.histogram(layer_name+"\output",output)
+        tf.summary.histogram(layer_name+"\output",output)    #tensorboard看优化过程用的
         return output
 
 
@@ -62,7 +62,7 @@ if __name__=="__main__":
 
     with tf.name_scope("loss"):
         loss=tf.reduce_mean(tf.reduce_sum(tf.square(ys-prediction),reduction_indices=[1]))            #损失函数是均方误差
-    tf.summary.scalar('loss',loss)
+    tf.summary.scalar('loss',loss)     #tensorboard看优化过程用的
 
     with tf.name_scope("train"):
         train_step=tf.train.GradientDescentOptimizer(0.1).minimize(loss)
@@ -70,7 +70,7 @@ if __name__=="__main__":
     init=tf.global_variables_initializer()
 
     sess=tf.Session()
-    merge=tf.summary.merge_all()
+    merge=tf.summary.merge_all()      #tensorboard看优化过程用的
     writer=tf.summary.FileWriter("logs/",sess.graph)
     sess.run(init)
 
@@ -87,8 +87,8 @@ if __name__=="__main__":
             lines=ax.plot(x,pre,'r-',lw=5)   #线是红色，线粗是5
             plt.pause(0.2)
 
-            rs=sess.run(merge,feed_dict={xs:x,ys:y})
-            writer.add_summary(rs,i)
+            rs=sess.run(merge,feed_dict={xs:x,ys:y})   #tensorboard看优化过程用的
+            writer.add_summary(rs,i)    #tensorboard看优化过程用的
 
 
 
